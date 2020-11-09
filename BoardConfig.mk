@@ -96,7 +96,6 @@ BOARD_PROVIDES_LIBRIL := true
 # Recovery
 TARGET_RECOVERY_DENSITY := xhdpi
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.qcom
-TARGET_RECOVERY_SKIP_EV_REL_INPUT := true
 
 # SELinux
 include $(DEVICE_PATH)/sepolicy/sepolicy.mk
