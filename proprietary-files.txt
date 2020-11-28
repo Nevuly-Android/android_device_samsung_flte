@@ -292,7 +292,7 @@ bin/qcks:vendor/bin/qcks
 bin/qmuxd:vendor/bin/qmuxd
 bin/rfs_access:vendor/bin/rfs_access
 bin/rmt_storage:vendor/bin/rmt_storage
-lib/libsec-ril.so:vendor/lib/libsec-ril.so|3008534fba31ebe71f9690afe4bf8786a28cf8c8
+lib/libsec-ril.so:vendor/lib/libsec-ril.so|7f294fd73dd483adcd61e3873ca960c180c5c3d6
 vendor/lib/libril-qcril-hook-oem.so
 
 # Sensors
