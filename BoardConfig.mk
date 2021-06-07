@@ -49,7 +49,6 @@ MALLOC_SVELTE := true
 
 # Audio
 USE_CUSTOM_AUDIO_POLICY := 1
-USE_XML_AUDIO_POLICY_CONF := 1
 
 # Bluetooth
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(DEVICE_PATH)/bluetooth
@@ -120,4 +119,4 @@ WIFI_DRIVER_FW_PATH_AP      := "/vendor/etc/wifi/bcmdhd_apsta.bin"
 WIFI_HIDL_UNIFIED_SUPPLICANT_SERVICE_RC_ENTRY := true
 
 # Inherit from the proprietary version
-include vendor/samsung/flte/BoardConfigVendor.mk
+-include vendor/samsung/flte/BoardConfigVendor.mk
