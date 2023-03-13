@@ -58,6 +58,9 @@ ro.telephony.default_network=9
 ro.telephony.mms_data_profile=5
 telephony.lteOnGsmDevice=1
 
+# Recovery
+ro.recovery.skip_ev_rel_input=true
+
 # Sensors
 debug.sensors=1
 
