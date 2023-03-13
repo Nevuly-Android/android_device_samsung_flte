@@ -3,36 +3,41 @@
 # Copyright (C) 2014-2016 The CyanogenMod Project
 # Copyright (C) 2017-2023 The LineageOS Project
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
 #
 
 set -e
 
-DEVICE=flte
-VENDOR=samsung
+export DEVICE=flte
+export VENDOR=samsung
 
 # Load extract_utils and do some sanity checks
 MY_DIR="${BASH_SOURCE%/*}"
-if [[ ! -d "$MY_DIR" ]]; then MY_DIR="$PWD"; fi
+if [[ ! -d "${MY_DIR}" ]]; then MY_DIR="${PWD}"; fi
 
-CM_ROOT="$MY_DIR"/../../..
+ANDROID_ROOT="${MY_DIR}/../../.."
 
-HELPER="$CM_ROOT"/vendor/lineage/build/tools/extract_utils.sh
-if [ ! -f "$HELPER" ]; then
-    echo "Unable to find helper script at $HELPER"
+HELPER="${ANDROID_ROOT}/tools/extract-utils/extract_utils.sh"
+if [ ! -f "${HELPER}" ]; then
+    echo "Unable to find helper script at ${HELPER}"
     exit 1
 fi
-. "$HELPER"
+source "${HELPER}"
+
+function blob_fixup() {
+    case "${1}" in
+        vendor/lib/libsec-ril.*)
+            "${PATCHELF}" --replace-needed libcutils.so libcutils-v29.so "${2}"
+            ;;
+        vendor/bin/thermal-engine)
+            sed -i 's|/system/etc|/vendor/etc|g' "${2}"
+            ;;
+        vendor/lib/libmmcamera2_sensor_modules.so)
+            sed -i 's|system/etc|vendor/etc|g;
+                    s|/system/lib|/vendor/lib|g' "${2}"
+            ;;
+    esac
+}
 
 if [ $# -eq 0 ]; then
     SRC=adb
@@ -49,22 +54,14 @@ else
         exit 1
     fi
 fi
+export SRC
 
-# Initialize the helper
-setup_vendor "$DEVICE" "$VENDOR" "$CM_ROOT"
+setup_vendor "${DEVICE}" "${VENDOR}" "${ANDROID_ROOT}" false
 
-extract "$MY_DIR"/proprietary-files.txt "$SRC"
+extract "${MY_DIR}/proprietary-files.txt" "${SRC}"
 
-DEVICE_BLOB_ROOT="$CM_ROOT"/vendor/"$VENDOR"/"$DEVICE"/proprietary
+export BOARD_COMMON=msm8974-common
 
+"./../../${VENDOR}/${BOARD_COMMON}/extract-files.sh" "$@"
 
-MMCAMERA2_SENSOR_MODULES="$DEVICE_BLOB_ROOT"/vendor/lib/libmmcamera2_sensor_modules.so
-sed -i 's|system/etc|vendor/etc|g;
-        s|/system/lib|/vendor/lib|g' "$MMCAMERA2_SENSOR_MODULES"
-
-THERMAL_ENGINE="$DEVICE_BLOB_ROOT"/vendor/bin/thermal-engine
-sed -i 's|/system/etc|/vendor/etc|g' "$THERMAL_ENGINE"
-
-./../msm8974-common/extract-files.sh $@
-
-"$MY_DIR"/setup-makefiles.sh
+"${MY_DIR}/setup-makefiles.sh"
