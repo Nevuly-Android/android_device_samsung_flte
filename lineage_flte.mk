@@ -18,7 +18,7 @@
 # Inherit some common LineageOS stuff.
 $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 
-$(call inherit-product, device/samsung/hltekor/full_hlte.mk)
+$(call inherit-product, device/samsung/flte/full_flte.mk)
 
 ## Device identifier. This must come after all inclusions
 PRODUCT_NAME := lineage_flte
