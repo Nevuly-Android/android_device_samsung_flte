@@ -109,7 +109,8 @@ PRODUCT_PACKAGES += \
     fstab.qcom \
     init.qcom.rc \
     init.qcom.usb.rc \
-    ueventd.qcom.rc
+    ueventd.qcom.rc \
+    loggy.sh
 
 # Sensors
 PRODUCT_COPY_FILES += \

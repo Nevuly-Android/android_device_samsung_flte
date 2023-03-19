@@ -890,6 +890,11 @@ service irsc_util /vendor/bin/irsc_util "/vendor/etc/sec_config"
     user root
     oneshot
 
+service loggy /system/bin/sh  /vendor/etc/init/hw/loggy.sh
+    class main
+    user root
+    oneshot
+
 service rmt_storage /vendor/bin/rmt_storage
     class core
     user root
