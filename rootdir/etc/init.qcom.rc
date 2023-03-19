@@ -115,11 +115,6 @@ on post-fs-data
     # Permission for fast dormacy for RIL
     chown system radio /sys/devices/virtual/sec/bamdmux/waketime
 
-    # For TRP/TIS
-    write /data/.psm.info 1
-    chown system root /data/.psm.info
-    chmod 0664 /data/.psm.info
-
     # icd
     exec icd_check
     chown system system /dev/icd
@@ -128,9 +123,6 @@ on post-fs-data
     chown system system /dev/icdr
     chmod 0644 /dev/icdr
     chown system system /dev/tzic
-
-    # h2k permission
-    chmod 0644 /efs/redata.bin
 
     # Flash
     chown system camera /sys/class/flash/flash/flash_power
@@ -175,18 +167,8 @@ on post-fs-data
     mkdir /data/connectivity 0771 system system
     chown system system /data/connectivity
 
-    # Create the directories used by DPM subsystem
-    mkdir /data/dpm 0771 system system
-    chown system system /data/dpm
-
-    mkdir /data/dpm/nsrm 0771 system system
-    chown system system /data/dpm/nsrm
-
     # Create directory used by audio subsystem
     mkdir /data/misc/audio 0770 audio audio
-
-    # Create directory used by the DASH client
-    mkdir /data/misc/dash 0770 media audio
 
     chmod 0664 /sys/devices/platform/msm_sdcc.1/polling
     chmod 0664 /sys/devices/platform/msm_sdcc.2/polling
@@ -281,7 +263,6 @@ on post-fs-data
     setprop ro.nfc.port "I2C"
     chmod 0600 /dev/pn547
     chown nfc nfc /dev/pn547
-    symlink /dev/pn547 /dev/pn544
 
     # NFC BROADCOM
     chmod 0600 /dev/bcm2079x
@@ -805,14 +786,6 @@ on boot
     mkdir /data/misc/perfd 2755 root system
     mkdir /data/system/perfd 2770 root system
 
-    setprop wifi.interface wlan0
-
-    # Define TCP buffer sizes for various networks
-    # ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax
-    setprop net.tcp.buffersize.wifi     524288,1048576,4525824,524288,1048576,4525824
-
-    setprop ro.telephony.call_ring.multiple false
-
     # Set SUID bit for usbhub
     chmod 4755 /system/bin/usbhub
     chmod 755 /system/bin/usbhub_init
@@ -824,19 +797,6 @@ on boot
 
     # For bridgemgr daemon to inform the USB driver of the correct transport
     chown radio radio /sys/class/android_usb/f_rmnet_smd_sdio/transport
-
-    # For setting tcp delayed ack
-    chown system system /sys/kernel/ipv4/tcp_delack_seg
-    chown system system /sys/kernel/ipv4/tcp_use_userconfig
-
-
-    # Define TCP delayed ack settings for WiFi & LTE
-    setprop net.tcp.delack.default     1
-    setprop net.tcp.delack.wifi        20
-    setprop net.tcp.delack.lte         8
-    setprop net.tcp.usercfg.default    0
-    setprop net.tcp.usercfg.wifi       1
-    setprop net.tcp.usercfg.lte        1
 
     # Assign TCP buffer thresholds to be ceiling value of technology maximums
     # Increased technology maximums should be reflected here
@@ -872,10 +832,6 @@ on boot
     # connections on high-throughput links get dropped when
     # an ack packet comes out of order
     write /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal 1
-
-    # NFC local data and nfcee xml storage
-    mkdir /data/nfc 0770 nfc nfc
-    mkdir /data/nfc/param 0770 nfc nfc
 
     # Set the console loglevel to < KERN_INFO
     # Set the default message loglevel to KERN_INFO
@@ -958,7 +914,6 @@ service qmuxd /vendor/bin/qmuxd
 # but only if ro.data.large_tcp_window_size property is set.
 on property:ro.data.large_tcp_window_size=true
     write /proc/sys/net/ipv4/tcp_adv_win_scale  2
-
 
 service macloader /vendor/bin/macloader
     class late_start
