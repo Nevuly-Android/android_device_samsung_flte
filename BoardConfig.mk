@@ -44,9 +44,6 @@ BOARD_RAMDISK_USE_XZ := true
 TARGET_KERNEL_CONFIG := lineage_flte_defconfig
 TARGET_KERNEL_SOURCE := kernel/samsung/msm8974
 
-# SVELTE Memory Configuration
-MALLOC_SVELTE := true
-
 # Audio
 USE_CUSTOM_AUDIO_POLICY := 1
 
