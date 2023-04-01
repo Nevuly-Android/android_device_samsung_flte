@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2017-2018, The LineageOS Project
+# Copyright (C) 2018 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,12 +14,4 @@
 # limitations under the License.
 #
 
-LOCAL_PATH := $(call my-dir)
-
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES := camera_shim.c
-LOCAL_MODULE := libshim_camera
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_CLASS := SHARED_LIBRARIES
-LOCAL_VENDOR_MODULE := true
-include $(BUILD_SHARED_LIBRARY)
+include $(call first-makefiles-under,$(call my-dir))
