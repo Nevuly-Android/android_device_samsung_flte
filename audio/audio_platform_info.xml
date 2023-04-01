@@ -40,6 +40,8 @@
         <device name="SND_DEVICE_IN_SPEAKER_DMIC" acdb_id="11" />
         <device name="SND_DEVICE_IN_HANDSET_DMIC_NS" acdb_id="34" />
         <device name="SND_DEVICE_IN_SPEAKER_DMIC_NS" acdb_id="35" />
+        <device name="SND_DEVICE_IN_HANDSET_STEREO_DMIC" acdb_id="54" />
+        <device name="SND_DEVICE_IN_SPEAKER_STEREO_DMIC" acdb_id="54" />
         <device name="SND_DEVICE_IN_BT_SCO_MIC" acdb_id="49" />
         <device name="SND_DEVICE_IN_BT_SCO_MIC_WB" acdb_id="51" />
         <device name="SND_DEVICE_IN_CAMCORDER_MIC" acdb_id="56" />
@@ -55,11 +57,7 @@
     </backend_names>
 
     <pcm_ids>
-        <!-- Output devices -->
-        <usecase name="USECASE_VOICE2_CALL" type="out" id="43"/>
-
-        <!-- Input devices -->
-        <usecase name="USECASE_VOICE2_CALL" type="in" id="43"/>
+        <!-- empty -->
     </pcm_ids>
 
     <device_names>
