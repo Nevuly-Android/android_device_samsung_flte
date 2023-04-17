@@ -2,19 +2,22 @@
 dalvik.vm.dex2oat-swap=false
 
 # Audio
+af.fast_track_multiplier=1
+audio.deep_buffer.media=true
 audio.offload.pcm.16bit.enable=true
 audio.offload.pcm.24bit.enable=true
-media.aac_51_output_enabled=true
-mm.enable.smoothstreaming=true
+audio.offload.disable=true
+audio.offload.video=true
 persist.vendor.audio.fluence.speaker=true
 persist.vendor.audio.fluence.voicecall=true
 persist.vendor.audio.fluence.voicerec=false
 ro.vendor.audio.sdk.fluencetype=fluence
-tunnel.audio.encode=true
-vendor.audio.av.streaming.offload.enable=true
+vendor.audio.offload.buffer.size.kb=32
 vendor.audio.offload.gapless.enabled=true
-vendor.audio.offload.multiple.enabled=true
-vendor.voice.path.for.pcm.voip=true
+vendor.audio.offload.multiple.enabled=false
+vendor.audio_hal.period_size=192
+vendor.dedicated.device.for.voip=true
+vendor.voice.path.for.pcm.voip=false
 
 # Camera
 camera2.portability.force_api=1
@@ -33,6 +36,9 @@ ro.gps.agps_provider=1
 ro.qc.sdk.izat.premium_enabled=0
 ro.qc.sdk.izat.service_mask=0x0
 
+# Memory optimizations
+ro.vendor.qti.am.reschedule_service=true
+
 # NFC
 ro.nfc.port=I2C
 
@@ -49,11 +55,14 @@ ro.telephony.default_network=9
 ro.telephony.mms_data_profile=5
 telephony.lteOnGsmDevice=1
 
-# Recovery
-ro.recovery.skip_ev_rel_input=true
+# RIL sends only one RIL_UNSOL_CALL_RING, so set call_ring.multiple to false
+ro.telephony.call_ring.multiple=0
 
 # Sensors
 debug.sensors=1
+
+# Tethering
+net.tethering.noprovisioning=true
 
 # Vendor security patch level
 ro.lineage.build.vendor_security_patch=2014-08-01
