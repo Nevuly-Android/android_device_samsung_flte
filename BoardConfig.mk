@@ -44,7 +44,7 @@ DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/manifest.xml
 
 # Kernel
 BOARD_KERNEL_BASE := 0x00000000
-BOARD_KERNEL_CMDLINE := console=null androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 androidboot.selinux=permissive
+BOARD_KERNEL_CMDLINE := console=null androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 zcache.enabled=1 zcache.compressor=lz4 androidboot.selinux=permissive
 BOARD_KERNEL_IMAGE_NAME := zImage
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_KERNEL_SEPARATED_DT := true
@@ -69,13 +69,13 @@ TARGET_PROCESS_SDK_VERSION_OVERRIDE += \
 BOARD_NFC_CHIPSET := pn547
 
 # Partitions
-BOARD_FLASH_BLOCK_SIZE := 131072
 BOARD_BOOTIMAGE_PARTITION_SIZE := 11534336
 BOARD_CACHEIMAGE_PARTITION_SIZE := 314572800
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 13631488
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 2663383040
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 28097608704
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_FLASH_BLOCK_SIZE := 131072
 BOARD_ROOT_EXTRA_FOLDERS := efs firmware firmware-modem
 BOARD_ROOT_EXTRA_SYMLINKS := \
     /data/tombstones:/tombstones
