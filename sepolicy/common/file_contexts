@@ -1,3 +1,6 @@
+# executeables
+/(vendor|system/vendor)/bin/hw/vendor\.lineage\.touch@1\.0-service\.flte             u:object_r:hal_lineage_touch_default_exec:s0
+
 # device nodes
 /dev/shtc1_sensor                                       u:object_r:sensors_device:s0
 
@@ -6,6 +9,7 @@
 
 # sysfs
 /sys/devices(/.*)?/input/input[1-2]/enabled             u:object_r:sysfs_hal_pwr:s0
+/sys/devices/virtual/sec/sec_touchkey/keypad_enable     u:object_r:sysfs_sec_touchkey:s0
 
 # Sensor Library
 /(vendor|system/vendor)/lib/libsensirion_f_5.so         u:object_r:vendor_sensor_lib_file:s0
