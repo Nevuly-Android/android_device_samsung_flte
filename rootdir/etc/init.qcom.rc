@@ -121,15 +121,6 @@ on post-fs-data
     # Permission for fast dormacy for RIL
     chown system radio /sys/devices/virtual/sec/bamdmux/waketime
 
-    # icd
-    exec icd_check
-    chown system system /dev/icd
-    chmod 0644 /dev/icd
-    write /dev/icdr 0
-    chown system system /dev/icdr
-    chmod 0644 /dev/icdr
-    chown system system /dev/tzic
-
     # Flash
     chown system camera /sys/class/flash/flash/flash_power
     chmod 660 /sys/class/flash/flash/flash_power
