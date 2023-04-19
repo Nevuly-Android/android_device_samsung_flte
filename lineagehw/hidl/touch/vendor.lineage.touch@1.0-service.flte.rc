@@ -1,4 +1,0 @@
-service vendor.touch-hal-1-0-flte /vendor/bin/hw/vendor.lineage.touch@1.0-service.flte
-    class hal
-    user system
-    group system
