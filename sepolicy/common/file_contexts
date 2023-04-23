@@ -8,4 +8,4 @@
 /sys/devices(/.*)?/input/input[1-2]/enabled             u:object_r:sysfs_hal_pwr:s0
 
 # Sensor Library
-/(vendor|system/vendor)/lib/libsensirion_f_5.so         u:object_r:vendor_sensor_lib_file:s0
+/(vendor|system/vendor)/lib/libsensirion_h_2.so         u:object_r:vendor_sensor_lib_file:s0
