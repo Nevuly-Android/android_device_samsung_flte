@@ -1009,11 +1009,6 @@ service charger /system/bin/charger
     capabilities SYS_BOOT
     seclabel u:r:charger:s0
 
-service loggy /system/bin/sh /vendor/etc/init/hw/loggy.sh
-    class main
-    user root
-    oneshot
-
 on property:persist.sys.ssr.restart_level=1
     write /sys/module/subsystem_restart/parameters/restart_level 1
     write /sys/bus/msm_subsys/devices/subsys0/restart_level system
