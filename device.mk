@@ -73,7 +73,7 @@ PRODUCT_PACKAGES += \
     android.hardware.nfc@1.0-impl \
     com.android.nfc_extras \
     libpn547_fw \
-    nfc_nci.msm8974
+    nfc_nci.msm8974 \
     NfcNci \
     Tag
 
