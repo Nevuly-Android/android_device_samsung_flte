@@ -121,20 +121,12 @@ on post-fs-data
     # Permission for fast dormacy for RIL
     chown system radio /sys/devices/virtual/sec/bamdmux/waketime
 
-    # icd
-    exec icd_check
-    chown system system /dev/icd
-    chmod 0644 /dev/icd
-    write /dev/icdr 0
-    chown system system /dev/icdr
-    chmod 0644 /dev/icdr
-    chown system system /dev/tzic
+    # Symlink to bugreport storage location
+    symlink /data/data/com.android.shell/files/bugreports /data/bugreports
 
     # Flash
     chown system camera /sys/class/flash/flash/flash_power
     chmod 660 /sys/class/flash/flash/flash_power
-
-    mkdir /data/misc/camera 0770 camera camera
 
     mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
 
@@ -142,6 +134,10 @@ on post-fs-data
     mkdir /data/vendor/wifi 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa/sockets 0770 wifi wifi
+
+    # Create the directories used by CnE subsystem
+    mkdir /data/connectivity 0771 system system
+    chown system system /data/connectivity
 
     # For WIFI TRP/TIS
     write /data/.psm.info 1
@@ -152,26 +148,27 @@ on post-fs-data
     chown system root /data/.ant.info
     chmod 0664 /data/.ant.info
 
-    # For WIFI MAC address
-    mkdir /efs/wifi 0775 radio system
-    chown system wifi /efs/wifi/.mac.info
-    chmod 0660 /efs/wifi/.mac.info
-    restorecon /efs/wifi/.mac.info
-    chmod 0660 /efs/wifi/.mac.cob
-
     # For WIFI Version
     write /data/.wifiver.info 0
     chown system root /data/.wifiver.info
     chmod 0664 /data/.wifiver.info
     restorecon /data/.wifiver.info
 
+    # For WIFI Cert
+    chmod 0664 /data/.bustxglom.info
+    chmod 0664 /data/.roamoff.info
+    chmod 0664 /data/.frameburst.info
+    chmod 0664 /data/.txbf.info
+
+    # For WIFI MAC address
+    mkdir /efs/wifi 0775 radio system
+    chown system wifi /efs/wifi/.mac.info
+    chmod 0660 /efs/wifi/.mac.info
+    restorecon /efs/wifi/.mac.info
+
     # For WIFI Front End Module
     chown system system /data/.cid.info
     chmod 0664 /data/.cid.info
-
-    # Create the directories used by CnE subsystem
-    mkdir /data/connectivity 0771 system system
-    chown system system /data/connectivity
 
     # Create directory used by audio subsystem
     mkdir /data/misc/audio 0770 audio audio
@@ -216,6 +213,8 @@ on post-fs-data
     mkdir /data/data/media 0770 media media
 
     # For disabling softkeys *FIXME*
+    chown root system /sys/class/sec/sec_touchkey/brightness
+    chmod 0664 /sys/class/sec/sec_touchkey/brightness
     chown root system /sys/class/leds/button-backlight/max_brightness
     chmod 0664 /sys/class/leds/button-backlight/max_brightness
 
@@ -234,12 +233,14 @@ on post-fs-data
     chown system radio /sys/class/sec/sec_touchkey/flip_mode
     chown system radio /sys/class/sec/sec_touchkey/boost_level
 
-    # Permissions for bluetooth
+    # Permission for bluetooth
     setprop ro.bt.bdaddr_path "/efs/bluetooth/bt_addr"
     chown bluetooth bluetooth ro.bt.bdaddr_path
     chown radio bluetooth /efs/bluetooth/bt_addr
     chmod 0640 /efs/bluetooth/bt_addr
     restorecon_recursive /efs/bluetooth
+    chown bluetooth bluetooth /dev/ttyHS0
+    chmod 0660 /dev/ttyHS0
     chmod 0660 /sys/class/rfkill/rfkill0/state
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
@@ -275,6 +276,12 @@ on post-fs-data
     chown nfc nfc /dev/bcm2079x
     mkdir /data/bcmnfc 0700 nfc nfc
     mkdir /data/bcmnfc/param 0700 nfc nfc
+    mkdir /data/nfc
+    mkdir /data/nfc/param
+    chmod 0700 /data/nfc
+    chmod 0700 /data/nfc/param
+    chown nfc nfc /data/nfc
+    chown nfc nfc /data/nfc/param
 
     # Gpio DVS
     chown radio system /sys/class/secgpio_check/secgpio_check_all/secgpio_ctrl
@@ -300,7 +307,7 @@ on post-fs-data
     setprop vold.post_fs_data_done 1
 
 on early-boot
-    # set RLIMIT_MEMLOCK to 64MB
+    # Set RLIMIT_MEMLOCK to 64MB
     setrlimit 8 67108864 67108864
 
     chown system graphics /sys/class/graphics/fb1/hpd
@@ -327,10 +334,12 @@ on boot
     chown system radio /sys/class/sec/switch/adc
     chown system radio /sys/class/sec/switch/otg_test
 
+    # bcmtch15xxx TSP
+    chown system system /sys/class/input/input0/enabled
+
     # Fingerprint
     mkdir /dev/validity 0775 system system
 
-    # SEC DVFS sysfs node
     chown radio system /sys/devices/system/cpu/kernel_max
     chmod 664 /sys/devices/system/cpu/kernel_max
 
@@ -418,6 +427,14 @@ on boot
     chown system system /sys/class/lcd/panel/dynamic_fps_use_te
     chmod 0660 /sys/class/lcd/panel/dynamic_fps_use_te
 
+    # Permission for LED
+    chown system system /sys/class/sec/led/led_r
+    chown system system /sys/class/sec/led/led_g
+    chown system system /sys/class/sec/led/led_b
+    chown system system /sys/class/sec/led/led_pattern
+    chown system system /sys/class/sec/led/led_blink
+    chown system system /sys/class/sec/led/led_lowpower
+
     # Permissions for TCON
     chown system system /sys/class/tcon/tcon/lux
     chown system system /sys/class/tcon/tcon/auto_br
@@ -436,13 +453,6 @@ on boot
     chown system system /sys/class/leds/red/device/grpfreq
     chown system system /sys/class/leds/red/device/grppwm
     chown system system /sys/class/leds/red/device/blink
-    chown system system /sys/class/sec/led/led_r
-    chown system system /sys/class/sec/led/led_g
-    chown system system /sys/class/sec/led/led_b
-    chown system system /sys/class/sec/led/led_pattern
-    chown system system /sys/class/sec/led/led_blink
-    chown system system /sys/class/sec/led/led_lowpower
-    chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/module/sco/parameters/disable_esco
     chown system system /sys/kernel/ipv4/tcp_wmem_min
     chown system system /sys/kernel/ipv4/tcp_wmem_def
@@ -503,12 +513,14 @@ on boot
     chown system radio /sys/class/sensors/proximity_sensor/raw_data
     chown system radio /sys/class/sensors/proximity_sensor/prox_avg
     chown system radio /sys/class/sensors/proximity_sensor/prox_cal
+    chown system radio /sys/class/sensors/proximity_sensor/prox_cal2
+    chown system radio /sys/class/sensors/proximity_sensor/prox_offset_pass
+    chown system radio /sys/class/sensors/proximity_sensor/prox_thresh
     chown system radio /sys/class/sensors/proximity_sensor/vendor
     chown system radio /sys/class/sensors/proximity_sensor/name
     chown system radio /sys/class/sensors/proximity_sensor/thresh_high
     chown system radio /sys/class/sensors/proximity_sensor/thresh_low
     chown system radio /sys/class/sensors/proximity_sensor/barcode_emul_en
-    chown system radio /sys/class/sensors/proximity_sensor/prox_offset_pass
 
     # Light Sensor
     chown system radio /sys/class/sensors/light_sensor/lux
@@ -535,6 +547,7 @@ on boot
     chown system radio /sys/class/sensors/magnetic_sensor/selftest
     chown system radio /sys/class/sensors/magnetic_sensor/raw_data
     chown system radio /sys/class/sensors/magnetic_sensor/adc
+    chown system radio /sys/class/sensors/magnetic_sensor/dac
     chown system radio /sys/class/sensors/magnetic_sensor/vendor
     chown system radio /sys/class/sensors/magnetic_sensor/name
     chown system radio /sys/class/sensors/magnetic_sensor/status
@@ -552,6 +565,7 @@ on boot
     chown system radio /sys/class/sensors/temphumidity_sensor/batt_temperature
 
     # Grip Sensor
+    chown system radio /sys/class/sensors/grip_sensor/reset
     chown system radio /sys/class/sensors/grip_sensor/vendor
     chown system radio /sys/class/sensors/grip_sensor/name
     chown system radio /sys/class/sensors/grip_sensor/raw_data
@@ -559,35 +573,12 @@ on boot
     chown system radio /sys/class/sensors/grip_sensor/threshold
     chown system radio /sys/class/sensors/grip_sensor/thresh_touch_check
     chown system radio /sys/class/sensors/grip_sensor/onoff
-
-    # HRM Sensor
-    chown system radio /sys/class/sensors/hrm_sensor/eol_test
-    chown system radio /sys/class/sensors/hrm_sensor/eol_test_result
-    chown system radio /sys/class/sensors/hrm_sensor/eol_test_status
-    chown system radio /sys/class/sensors/hrm_sensor/hr_range
-    chown system radio /sys/class/sensors/hrm_sensor/hr_range2
-    chown system radio /sys/class/sensors/hrm_sensor/look_mode_ir
-    chown system radio /sys/class/sensors/hrm_sensor/look_mode_red
-    chown system radio /sys/class/sensors/hrm_sensor/led_current
-    chown system radio /sys/class/sensors/hrm_sensor/int_pin_check
-    chown system radio /sys/class/sensors/hrm_sensor/lib_ver
-    chown system radio /sys/class/sensors/hrm_sensor/hrm_flush
-    chown system radio /sys/class/sensors/hrm_sensor/eol_lib_ver
-    chown system radio /sys/class/sensors/hrm_sensor/elf_lib_ver
-    chown system radio /sys/class/sensors/hrm_sensor/adpd_reg_read
-    chown system radio /sys/class/sensors/hrm_sensor/adpd_reg_write
-    chown system radio /sys/class/sensors/hrm_sensor/adpd_mode
-    chown system radio /sys/class/sensors/hrm_sensor/adpd_configuration
-    chown system radio /sys/class/sensors/hrm_sensor/adpd_stat
-    chown system radio /sys/class/sensors/hrm_sensor/name
-    chown system radio /sys/class/sensors/hrm_sensor/vendor
-    chown system radio /sys/class/sensors/hrm_sensor/device_id
-
-    # UV Sensor
-    chown system radio /sys/class/sensors/uv_sensor/raw_data
+    chown system radio /sys/class/sensors/grip_sensor/erase_cal
 
     # SensorHub
     chown system radio /sys/class/sensors/ssp_sensor/enable
+    chown system radio /sys/class/sensors/ssp_sensor/enable_irq
+    chown system radio /sys/class/sensors/ssp_sensor/mcu_dump
     chown system radio /sys/class/sensors/ssp_sensor/mcu_rev
     chown system radio /sys/class/sensors/ssp_sensor/mcu_name
     chown system radio /sys/class/sensors/ssp_sensor/mcu_test
@@ -595,7 +586,6 @@ on boot
     chown system radio /sys/class/sensors/ssp_sensor/mcu_update
     chown system radio /sys/class/sensors/ssp_sensor/mcu_update2
     chown system radio /sys/class/sensors/ssp_sensor/mcu_update_ums
-    chown system radio /sys/class/sensors/ssp_sensor/mcu_dump
     chown system radio /sys/class/sensors/ssp_sensor/mcu_sleep_test
     chown system radio /sys/class/sensors/ssp_sensor/ori_poll_delay
     chown system radio /sys/class/sensors/ssp_sensor/mag_poll_delay
@@ -608,7 +598,6 @@ on boot
     chown system radio /sys/class/sensors/ssp_sensor/gyro_poll_delay
     chown system radio /sys/class/sensors/ssp_sensor/uncalib_gyro_poll_delay
     chown system radio /sys/class/sensors/ssp_sensor/ssp_flush
-    chown system radio /sys/class/sensors/ssp_sensor/shake_cam
     chmod 0600 /dev/batch_io
     chown system system /dev/batch_io
 
@@ -664,13 +653,18 @@ on boot
     setprop ro.nfc.port "I2C"
     chmod 0600 /dev/pn547
     chown nfc nfc /dev/pn547
-    symlink /dev/pn547 /dev/pn544
 
     # NFC BROADCOM
     chmod 0600 /dev/bcm2079x
     chown nfc nfc /dev/bcm2079x
     mkdir /data/bcmnfc 0700 nfc nfc
     mkdir /data/bcmnfc/param 0700 nfc nfc
+    mkdir /data/nfc
+    mkdir /data/nfc/param
+    chmod 0700 /data/nfc
+    chmod 0700 /data/nfc/param
+    chown nfc nfc /data/nfc
+    chown nfc nfc /data/nfc/param
 
     # NFC SLSI
     chmod 0660 /dev/sec-nfc
@@ -740,6 +734,7 @@ on boot
     chown system system /sys/class/timed_output/vibrator/pwm_default
     chmod 0440 /sys/class/timed_output/vibrator/pwm_threshold
     chown system system /sys/class/timed_output/vibrator/pwm_threshold
+    chown system system /sys/class/timed_output/vibrator/enable
 
     # Panel color temperature
     chmod 0660 /sys/class/lcd/panel/panel_colors
@@ -769,8 +764,6 @@ on boot
 
     # For BT MAC address
     mkdir /efs/bluetooth 0775 radio system
-
-    # If already exist
     chown radio system /efs/bluetooth
     chmod 0775 /efs/bluetooth
 
@@ -788,9 +781,15 @@ on boot
     mkdir /dev/socket/qmux_gps 0770 gps gps
     chmod 2770 /dev/socket/qmux_gps
 
+    # Allow QMUX daemon to assign port open wait time
+    chown radio radio /sys/devices/virtual/hsicctl/hsicctl0/modem_wait
+
     # Create directories for perfd
     mkdir /data/misc/perfd 2755 root system
     mkdir /data/system/perfd 2770 root system
+
+    # 4.3 requires this
+    chmod 0644 /proc/cmdline
 
     # Set SUID bit for usbhub
     chmod 4755 /system/bin/usbhub
@@ -839,6 +838,10 @@ on boot
     # an ack packet comes out of order
     write /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal 1
 
+    # NFC local data and nfcee xml storage
+    mkdir /data/nfc 0770 nfc nfc
+    mkdir /data/nfc/param 0770 nfc nfc
+
     # Set the console loglevel to < KERN_INFO
     # Set the default message loglevel to KERN_INFO
     # modified by SEC, SEC use a loglevel path with another way
@@ -852,26 +855,29 @@ on boot
     chown wifi wifi /sys/module/dhd/parameters/firmware_path
     chown wifi wifi /sys/module/dhd/parameters/nvram_path
 
-# Allow usb charging to be disabled peristently
 on property:persist.usb.chgdisabled=1
     write /sys/class/power_supply/battery/charging_enabled 0
 
-#start camera server as daemon
+service adsprpcd /vendor/bin/adsprpcd
+    class main
+    user media
+    group media
+
 service qcamerasvr /vendor/bin/mm-qcamera-daemon
     class main
     user camera
     group camera system inet input graphics bluetooth
 
 service qseecomd /vendor/bin/qseecomd
-   class core
-   user root
-   group root
+    class core
+    user root
+    group root
 
 service mpdecision /vendor/bin/mpdecision --avg_comp
-   class main
-   user root
-   group system readproc
-   disabled
+    class main
+    user root
+    group root readproc
+    disabled
 
 service thermal-engine /vendor/bin/thermal-engine
    class main
@@ -881,48 +887,31 @@ service thermal-engine /vendor/bin/thermal-engine
    socket thermal-recv-passive-client stream 0666 system system
    group root
 
-service adsprpcd /vendor/bin/adsprpcd
-   class main
-   user media
-   group media
-
-#service audiod /system/bin/audiod
-#   class late_start
-#   user system
-#   group system
+service audiod /system/bin/audiod
+    class late_start
+    user system
+    group system
 
 service irsc_util /vendor/bin/irsc_util "/vendor/etc/sec_config"
     class main
     user root
     oneshot
 
-service loggy /system/bin/sh  /vendor/etc/init/hw/loggy.sh
-    class main
-    user root
-    oneshot
+service rfs_access /vendor/bin/rfs_access
+    class core
+    user system
+    group system net_raw
 
 service rmt_storage /vendor/bin/rmt_storage
     class core
     user root
     group system wakelock
 
-service rfs_access /vendor/bin/rfs_access
-   class core
-   user system
-   group system net_raw
-
-on property:ro.debuggable=1
-    chmod 0666 /sys/class/mhl/swing
-    chmod 0666 /sys/class/mhl/timing
-
-# QMUX must be in multiple groups to support external process connections
 service qmuxd /vendor/bin/qmuxd
     class core
     user radio
     group radio audio bluetooth gps oem_2950 log
 
-# Adjust socket buffer to enlarge TCP receive window for high bandwidth
-# but only if ro.data.large_tcp_window_size property is set.
 on property:ro.data.large_tcp_window_size=true
     write /proc/sys/net/ipv4/tcp_adv_win_scale  2
 
@@ -1002,7 +991,6 @@ on property:sys.boot_completed=1
 
     # Post boot services
     rm /data/system/perfd/default_values
-    setprop vendor.post_boot.parsed 1
     start mpdecision
 
     # Symlink directories to access telephony.db and preferred-apn.xml required by libsec-ril
@@ -1011,11 +999,7 @@ on property:sys.boot_completed=1
     restorecon /data/data/com.android.providers.telephony/databases
     restorecon /data/data/com.android.providers.telephony/shared_prefs
 
-on property:persist.data.ds_fmc_app.mode=1
-    start ds_fmc_appd
-
 on property:ro.data.large_tcp_window_size=true
-    # Adjust socket buffer to enlarge TCP receive window for high bandwidth (e.g. DO-RevB)
     write /proc/sys/net/ipv4/tcp_adv_win_scale  2
 
 service charger /system/bin/charger
@@ -1025,19 +1009,20 @@ service charger /system/bin/charger
     capabilities SYS_BOOT
     seclabel u:r:charger:s0
 
-# Disable SSR to SoC restart
+service loggy /system/bin/sh /vendor/etc/init/hw/loggy.sh
+    class main
+    user root
+    oneshot
+
 on property:persist.sys.ssr.restart_level=1
     write /sys/module/subsystem_restart/parameters/restart_level 1
-#   write /sys/module/wcnss_ssr_8960/parameters/enable_riva_ssr 0
     write /sys/bus/msm_subsys/devices/subsys0/restart_level system
     write /sys/bus/msm_subsys/devices/subsys1/restart_level system
     write /sys/bus/msm_subsys/devices/subsys2/restart_level system
     write /sys/bus/msm_subsys/devices/subsys3/restart_level system
 
-# Enable SSR
 on property:persist.sys.ssr.restart_level=3
     write /sys/module/subsystem_restart/parameters/restart_level 3
-#   write /sys/module/wcnss_ssr_8960/parameters/enable_riva_ssr 1
     write /sys/bus/msm_subsys/devices/subsys0/restart_level related
     write /sys/bus/msm_subsys/devices/subsys1/restart_level related
     write /sys/bus/msm_subsys/devices/subsys2/restart_level related
